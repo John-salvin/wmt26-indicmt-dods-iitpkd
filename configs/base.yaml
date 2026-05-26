@@ -1,0 +1,44 @@
+# Shared defaults — individual experiment configs inherit and override.
+# Used by src/train/train_dora.py.
+
+base_model: facebook/nllb-200-3.3B
+
+quantization:
+  load_in_4bit: true
+  bnb_4bit_compute_dtype: bfloat16
+  bnb_4bit_quant_type: nf4
+  bnb_4bit_use_double_quant: true
+
+peft:
+  type: lora
+  r: 128
+  lora_alpha: 16
+  use_rslora: true
+  use_dora: true
+  lora_dropout: 0.05
+  bias: none
+  task_type: SEQ_2_SEQ_LM
+  target_modules: [q_proj, k_proj, v_proj, out_proj, fc1, fc2]
+
+data:
+  max_examples: 200000
+  max_seq_length: 256
+  bt_tag: "<BT>"
+  sampling_temperature: 5
+
+training:
+  per_device_train_batch_size: 8
+  gradient_accumulation_steps: 4
+  learning_rate: 2.0e-4
+  warmup_ratio: 0.03
+  num_train_epochs: 5
+  bf16: true
+  gradient_checkpointing: true
+  optim: paged_adamw_8bit
+  save_strategy: steps
+  save_steps: 1000
+  save_total_limit: 3
+  evaluation_strategy: steps
+  eval_steps: 1000
+  logging_steps: 50
+  predict_with_generate: false

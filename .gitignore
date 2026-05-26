@@ -1,0 +1,50 @@
+# Data
+data/
+*.tsv
+*.txt.gz
+*.parquet
+*.bin
+*.safetensors
+*.pt
+*.ckpt
+
+# Model checkpoints
+ckpts/
+checkpoints/
+hf_cache/
+*.lock
+
+# But DO track the system output files we'll submit
+!outputs/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.python-version
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+wandb/
+
+# Secrets
+.env
+*.key
+*.pem
