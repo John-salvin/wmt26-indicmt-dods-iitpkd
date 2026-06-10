@@ -48,3 +48,29 @@ wandb/
 .env
 *.key
 *.pem
+
+# Weights
+ckpts/
+*.safetensors
+*.bin
+*.pt
+*.pth
+
+# Data
+data/
+Datasets/
+*.csv
+*.tsv
+*.xlsx
+
+# Logs
+logs/
+*.err
+*.out
+
+# Python
+__pycache__/
+*.pyc
+.env
+nllb_venv/
+wmt26_pkgs/
