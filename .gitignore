@@ -1,14 +1,76 @@
+# Data
+data/
+*.tsv
+*.txt.gz
+*.parquet
+*.bin
 *.safetensors
-optimizer.pt
-rng_state.pth
-scheduler.pt
+*.pt
+*.ckpt
+
+# Model checkpoints
+ckpts/
+checkpoints/
+hf_cache/
+*.lock
+
+# But DO track the system output files we'll submit
+!outputs/.gitkeep
+
+# Python
 __pycache__/
 *.pyc
-*.pyc
-wmt26_backup/
-*.bin
-ckpts/
+*.pyo
+.venv/
+venv/
+.python-version
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
 logs/
-outputs/
-run_nllb.sbatch
-setup_nllb_env.sh
+*.log
+wandb/
+
+# Secrets
+.env
+*.key
+*.pem
+
+# Weights
+ckpts/
+*.safetensors
+*.bin
+*.pt
+*.pth
+
+# Data
+data/
+Datasets/
+*.csv
+*.tsv
+*.xlsx
+
+# Logs
+logs/
+*.err
+*.out
+
+# Python
+__pycache__/
+*.pyc
+.env
+nllb_venv/
+wmt26_pkgs/
