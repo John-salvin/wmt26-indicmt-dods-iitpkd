@@ -79,6 +79,8 @@ enforces: every primary present + the PDF present.
 
 import argparse
 import csv
+import sys as _sys
+csv.field_size_limit(min(2**31 - 1, _sys.maxsize))
 import os
 import signal
 import sys
@@ -101,8 +103,8 @@ LANG_REGISTRY = {
     "bodo": dict(tag="hin_Deva", native=False, script="Deva", surrogate_for="Bodo",
                  note="Devanagari surrogate (hin_Deva). For Bodo, run_indictrans2.py (brx_Deva) is usually stronger."),
     "brx":  dict(tag="hin_Deva", native=False, script="Deva", surrogate_for="Bodo"),
-    "trp":  dict(tag="ben_Beng", native=False, script="Beng", surrogate_for="Kokborok",
-                 note="Bengali surrogate (ben_Beng). Warm-start from a Bodo adapter for transfer."),
+    "trp":  dict(tag="lus_Latn", native=False, script="Latn", surrogate_for="Kokborok",
+                 note="Latin surrogate (lus_Latn, Mizo -- same script + Tibeto-Burman family). Adapter learns Kokborok."),
 }
 
 
@@ -182,7 +184,7 @@ def bos_id(tok, tgt_tag):
 
 # ------------------------------------------------------------------ translate
 def generate(model, tok, sentences, src_tag, tgt_tag, num_beams, max_len,
-             batch_size, n_return=1):
+             batch_size, n_return=1, length_penalty=1.0, no_repeat_ngram_size=0):
     model.eval()
     device = next(model.parameters()).device
     tok.src_lang = src_tag
@@ -194,7 +196,7 @@ def generate(model, tok, sentences, src_tag, tgt_tag, num_beams, max_len,
                   return_tensors="pt").to(device)
         with torch.no_grad():
             gen = model.generate(**enc, forced_bos_token_id=fbos,
-                                 num_beams=num_beams, num_return_sequences=n_return,
+                                 num_beams=num_beams, num_return_sequences=n_return, length_penalty=length_penalty, no_repeat_ngram_size=no_repeat_ngram_size,
                                  max_length=max_len, early_stopping=True)
         dec = tok.batch_decode(gen, skip_special_tokens=True)
         if n_return == 1:
@@ -243,8 +245,7 @@ def cmd_translate(args):
                         args.max_len, args.batch_size, n_return=args.n_candidates)
         hyps = rerank(src, cand)
     else:
-        hyps = generate(model, tok, src, src_tag, tgt_tag, args.num_beams,
-                        args.max_len, args.batch_size, n_return=1)
+        hyps = generate(model, tok, src, src_tag, tgt_tag, args.num_beams, args.max_len, args.batch_size, length_penalty=args.length_penalty, no_repeat_ngram_size=args.no_repeat_ngram_size)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as f:
         f.write("\n".join(hyps) + "\n")
@@ -465,6 +466,8 @@ def build_parser():
     t.add_argument("--adapter", default=None)
     t.add_argument("--out", required=True)
     t.add_argument("--num-beams", type=int, default=5)
+    t.add_argument("--length-penalty", type=float, default=1.0)
+    t.add_argument("--no-repeat-ngram-size", type=int, default=0)
     t.add_argument("--rerank", action="store_true")
     t.add_argument("--n-candidates", type=int, default=10)
     t.add_argument("--score", action="store_true")
