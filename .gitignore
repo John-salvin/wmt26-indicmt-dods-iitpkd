@@ -74,3 +74,14 @@ __pycache__/
 .env
 nllb_venv/
 wmt26_pkgs/
+*venv/
+
+# Submit outputs — never committed
+outputs/submit/
+outputs/submit_backup/
+
+# Scratch
+*.tmp
+*.bak
+*.raw.txt
+*.fixed.txt
