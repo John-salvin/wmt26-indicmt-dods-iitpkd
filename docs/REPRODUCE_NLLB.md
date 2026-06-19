@@ -1,5 +1,9 @@
 # Reproducing the NLLB Submissions
 
+> **Note on evaluation:** BLEU/chrF scores reported in `docs/SUBMISSIONS.md` and in
+> `results/nllb/eval_*.txt` were computed against the **WMT 2025 gold-standard test set**
+> as a development proxy. They are **not** WMT 2026 test set scores.
+
 ## Prerequisites
 
 - Cluster with at least one CUDA GPU (A100/V100 recommended, ≥40 GB VRAM for the 3.3B model)

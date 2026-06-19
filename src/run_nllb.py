@@ -62,7 +62,7 @@ enforces: every primary present + the PDF present.
 """
 
 # ---------------------------------------------------------------------------
-# OFFLINE-CLUSTER COMPATIBILITY (Madhava reality, June 2026)
+# OFFLINE-CLUSTER COMPATIBILITY
 # ---------------------------------------------------------------------------
 # Every "extra" dependency is imported LAZILY inside the feature that needs it,
 # so a missing package never breaks the core fine-tune / translate / score path.
@@ -89,7 +89,7 @@ from pathlib import Path
 
 import torch
 
-DEFAULT_BASE = "/scratch/p142503002-swapnilh/wmt26/models/nllb-200-3.3B"
+DEFAULT_BASE = "facebook/nllb-200-3.3B"
 
 # tag = FLORES-200 code the tokenizer knows; native flips to surrogate handling.
 LANG_REGISTRY = {
@@ -215,7 +215,8 @@ def load_kiwi():
     global _KIWI
     if _KIWI is None:
         from comet import download_model, load_from_checkpoint
-        _KIWI = load_from_checkpoint("/scratch/p142503002-swapnilh/wmt26/models/wmt22-cometkiwi-da/checkpoints/model_local.ckpt")
+        ckpt = os.environ.get("KIWI_CKPT", "wmt22-cometkiwi-da")
+        _KIWI = load_from_checkpoint(ckpt) if os.path.exists(ckpt) else download_model(ckpt)
     return _KIWI
 
 

@@ -7,6 +7,10 @@
 12 submission files total: 6 primary + 6 contrastive, covering 3 language pairs × 2 directions.  
 ★ = best system for that direction (by dev BLEU).
 
+> **Note on BLEU scores:** All Dev BLEU figures in this document were computed against the
+> **WMT 2025 gold-standard test set** used as a development proxy. WMT 2026 test references
+> are not yet public. These scores are **not** from the WMT 2026 test set.
+
 ---
 
 ## Language Tag Assignment
