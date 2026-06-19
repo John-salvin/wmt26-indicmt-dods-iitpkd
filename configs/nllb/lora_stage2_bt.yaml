@@ -1,0 +1,22 @@
+# Stage 2: warm-start from Stage 1, train on official x2 + BT synthetic
+base_model: facebook/nllb-200-3.3B
+init_adapter: <stage1_adapter>  # e.g. ckpts/nllb_en-kha/final
+lora:
+  r: 64
+  alpha: 16
+  dropout: 0.05
+  dora: true
+  rslora: true
+  target_modules: [q_proj, k_proj, v_proj, out_proj, fc1, fc2]
+  bias: none
+training:
+  precision: bf16
+  gradient_checkpointing: true
+  batch_size: 8
+  grad_accum: 4
+  max_length: 256
+  optimizer: adamw
+  learning_rate: 1.0e-4
+  warmup_ratio: 0.03
+  epochs: 2
+  beam_size: 4

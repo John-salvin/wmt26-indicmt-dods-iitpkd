@@ -42,8 +42,8 @@
 set -euo pipefail
 
 # ----- EDIT ONCE -------------------------------------------------------------
-VENV="/scratch/p142503002-swapnilh/nllb_venv"
-export HF_HOME="/scratch/p142503002-swapnilh/wmt26/models"
+VENV="/scratch/$USER/nllb_venv"
+export HF_HOME="/scratch/$USER/wmt26/models"
 # -----------------------------------------------------------------------------
 
 cd "/scratch/$USER/wmt26"
