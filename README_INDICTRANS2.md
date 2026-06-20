@@ -19,8 +19,9 @@ wmt26-indicmt-dods-iitpkd/
 ├── src/
 │   └── run_indictrans2.py            # PRIMARY pipeline: finetune / backtranslate / translate / score / package
 ├── scripts/
+│   ├── run.sbatch                    # SLURM wrapper (edit VENV + HF_HOME once); shared with the NLLB side
+│   ├── fix_garble.py                 # post-hoc repair of degenerate output lines; shared with the NLLB side
 │   └── indictrans2/
-│       ├── run.sbatch                # SLURM wrapper (edit VENV + HF_HOME once)
 │       ├── finetune_bt_job.sh        # fine-tune / BT-stage fine-tune job, with sister-language warm start
 │       ├── eval_job.sh               # translate + score against WMT 2025 gold (dev proxy)
 │       ├── csv_to_tsv.py             # official CSV -> headerless 2-col TSV
@@ -33,8 +34,7 @@ wmt26-indicmt-dods-iitpkd/
 │       ├── check_bt_orientation.py   # sanity-check which BT TSV column is which language
 │       ├── avg_checkpoints.py        # checkpoint averaging (SWA) over LoRA adapters
 │       ├── convert_newlines.py       # literal "\n" -> real newline repair
-│       ├── preprocess_mt_output.py   # MT output cleanup for scoring
-│       └── fix_garble.py             # post-hoc repair of degenerate output lines
+│       └── preprocess_mt_output.py   # MT output cleanup for scoring
 └── results/
     └── indictrans2/
         └── submit/                   # WMT 2026 test-set outputs (committed)
@@ -109,7 +109,7 @@ pip install -r requirements.txt
 #    (test sets are participant-only — obtain from task organizers)
 #    Optionally convert to headerless TSV with scripts/indictrans2/csv_to_tsv.py
 
-# 3. Edit VENV and HF_HOME in scripts/indictrans2/run.sbatch (two lines at the top, once only)
+# 3. Edit VENV and HF_HOME in scripts/run.sbatch (two lines at the top, once only)
 
 # 4. Fine-tune per direction (main quality step)
 python src/run_indictrans2.py finetune \
@@ -138,9 +138,10 @@ python src/run_indictrans2.py package --outputs-dir outputs --team DoDS-IITPKD
 
 The committed WMT 2026 test-set outputs are in `results/indictrans2/submit/`.
 
-GPU jobs on the cluster go through `scripts/indictrans2/run.sbatch`,
-`finetune_bt_job.sh` (fine-tune / BT-stage fine-tune, with sister-language adapter
-warm-start via `--init-adapter`), and `eval_job.sh` (translate + score against gold).
+GPU jobs on the cluster go through `scripts/run.sbatch`,
+`scripts/indictrans2/finetune_bt_job.sh` (fine-tune / BT-stage fine-tune, with
+sister-language adapter warm-start via `--init-adapter`), and
+`scripts/indictrans2/eval_job.sh` (translate + score against gold).
 
 ---
 
