@@ -42,8 +42,8 @@
 set -euo pipefail
 
 # ----- EDIT ONCE -------------------------------------------------------------
-VENV="/scratch/$USER/nllb_venv"
-export HF_HOME="/scratch/$USER/wmt26/models"
+VENV="$HOME/wmt26_gpu"                       # <-- set to your working venv
+export HF_HOME="/scratch/$USER/wmt26/hf_cache" # <-- set to your model cache dir
 # -----------------------------------------------------------------------------
 
 cd "/scratch/$USER/wmt26"
@@ -53,7 +53,7 @@ mkdir -p logs
 # venv already works standalone; required if it depends on the module's libs.
 module purge 2>/dev/null || true
 module load python-3.12.8 2>/dev/null || true
-module load cuda-12.4
+
 source "$VENV/bin/activate"
 
 # Offline: the nodes have no internet. Models load from HF_HOME cache only.
@@ -74,12 +74,12 @@ print("torch:", torch.__version__, "| cuda avail:", torch.cuda.is_available())
 if torch.cuda.is_available():
     print("gpu  :", torch.cuda.get_device_name(0))
 PY
-echo "CMD    : python $@"
+echo "CMD    : python src/$@"
 echo "=========================================="
 
 # Foreground run (mirrors your train.sbatch). On wall-clock kill, SLURM requeues
 # and `--resume auto` resumes from the latest checkpoint.
-python "$@"
+python "src/$@"
 
 echo "=========================================="
 echo "Job step finished."
