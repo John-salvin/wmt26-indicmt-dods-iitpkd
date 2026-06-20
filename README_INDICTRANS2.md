@@ -66,10 +66,7 @@ pairs that means:
 | Assamese (as) | `asm_Beng` | native |
 | Manipuri (mni) | `mni_Beng` | native |
 | Bodo (bodo / brx) | `brx_Deva` | native |
-| Kokborok (trp) | `asm_Beng` (surrogate) | no native tag — Bengali-script surrogate; the LoRA adapter learns Kokborok from data |
 
-Mizo (lus) and Khasi (kha) are Latin-script with no usable IndicTrans2 surrogate — those
-two pairs are handled by the NLLB pipeline instead (see [`README.md`](README.md)).
 
 ---
 
@@ -85,7 +82,6 @@ data/
 ├── en-as.train.csv      # English–Assamese
 ├── en-mni.train.csv     # English–Manipuri
 ├── en-bodo.train.csv    # English–Bodo
-└── en-trp.train.csv     # English–Kokborok (Bengali-script surrogate)
 ```
 
 ### Test sets (participant-only)
@@ -96,7 +92,7 @@ or reproduce dev-proxy scores you must obtain these files from the task organize
 
 ### Backtranslation monolingual files
 
-Monolingual files used for back-translation are extracted/filtered from official sources
+Monolingual files used for back-translation are extracted/filtered from official sources using
 (`scripts/indictrans2/filter_mono.py`, `domain_filter.py`) and checked for leakage against
 the gold set (`leakage_check.py`, `remove_leakage.py`) before use. They are not committed
 to this repository.
@@ -167,10 +163,6 @@ Each direction proceeds through some subset of:
 4. **Checkpoint averaging** (`avg_checkpoints.py`) over the last N checkpoints, where used.
 5. **CometKiwi reference-free reranking** at inference time (`--rerank`), falling back to
    plain beam search if CometKiwi is unavailable.
-
-**Sister-language warm start:** Kokborok (trp) has no native IndicTrans2 tag and limited
-data, so its adapter can be warm-started from the trained Bodo adapter
-(`--init-adapter ckpts/it2_bodo-en/final`) before fine-tuning on Kokborok data.
 
 **Wall-clock resumability:** training catches `SIGUSR1` (the Madhava 12-hour wall-clock
 signal), checkpoints, and exits cleanly so SLURM can requeue and `--resume auto` picks up
