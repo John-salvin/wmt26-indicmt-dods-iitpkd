@@ -1,87 +1,15 @@
-# Data
-data/
-*.tsv
-*.txt.gz
-*.parquet
-*.bin
-*.safetensors
-*.pt
-*.ckpt
-
-# Model checkpoints
 ckpts/
-checkpoints/
+data/
+logs/
+log/
 hf_cache/
-*.lock
-
-# But DO track the system output files we'll submit
-!outputs/.gitkeep
-
-# Python
+models/
+venv/
+wheels/
 __pycache__/
 *.pyc
-*.pyo
-.venv/
-venv/
-.python-version
-
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Editor
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Logs
-logs/
-*.log
-wandb/
-
-# Secrets
-.env
-*.key
-*.pem
-
-# Weights
-ckpts/
+*.tar.gz
 *.safetensors
 *.bin
 *.pt
-*.pth
-
-# Data
-data/
-Datasets/
-*.csv
-*.tsv
-*.xlsx
-
-# Logs
-logs/
-*.err
-*.out
-
-# Python
-__pycache__/
-*.pyc
-.env
-nllb_venv/
-wmt26_pkgs/
-*venv/
-
-# Submit outputs — never committed
-outputs/submit/
-outputs/submit_backup/
-
-# Scratch
-*.tmp
-*.bak
-*.raw.txt
-*.fixed.txt
+.DS_Store
