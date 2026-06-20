@@ -19,5 +19,11 @@ See `docs/REPRODUCE_NLLB.md` for the full reproduction guide.
 
 | Script | Purpose |
 |---|---|
-| `run.sbatch` | SLURM wrapper used by all jobs |
-| `fix_garble.py` | Per-line garble detection and repair |
+| `run.sbatch` | SLURM wrapper used by all jobs (both NLLB and IndicTrans2) |
+| `fix_garble.py` | Per-line garble detection and repair (both NLLB and IndicTrans2) |
+
+## IndicTrans2 pipeline (`scripts/indictrans2/`)
+
+Unlike the NLLB scripts above, these are generic, parameterized per-direction job
+scripts (run once per language pair) plus standalone data-prep utilities — see
+[`../README_INDICTRANS2.md`](../README_INDICTRANS2.md) for the full layout and usage.
