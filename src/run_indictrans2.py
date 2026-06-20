@@ -541,7 +541,7 @@ def cmd_finetune(args):
         peft_cfg = LoraConfig(
             r=args.lora_r, lora_alpha=args.lora_alpha, lora_dropout=0.05,
             bias="none", task_type="SEQ_2_SEQ_LM",
-            target_modules=_IT2_ATTN_FFN,
+            target_modules=["q_proj", "v_proj", "out_proj", "encoder_attn.q_proj", "encoder_attn.v_proj", "encoder_attn.out_proj"],
             use_dora=args.dora, use_rslora=args.rslora,
         )
         model = get_peft_model(model, peft_cfg)
@@ -565,6 +565,28 @@ def cmd_finetune(args):
     ds = ds.map(preprocess, batched=True, remove_columns=ds.column_names,
                 desc="tokenizing")
 
+    # ---- optional validation/dev set --------------------------------------
+    eval_ds = None
+    eval_refs = None  # kept un-tokenized for BLEU/chrF++ if --compute-bleu
+    if args.val:
+        vsrc_all, vtgt_all = [], []
+        v_src_col = args.val_src_col or args.src_col
+        v_tgt_col = args.val_tgt_col or args.tgt_col
+        for fp in args.val:
+            vs, vt = read_columns(fp, v_src_col, v_tgt_col)
+            if vt is None:
+                sys.exit(f"[finetune] --val file {fp} has no target column ({v_tgt_col}).")
+            vsrc_all += vs
+            vtgt_all += vt
+        if getattr(args, "max_rows", 0) and args.max_rows > 0:
+            vsrc_all, vtgt_all = vsrc_all[:args.max_rows], vtgt_all[:args.max_rows]
+        print(f"[finetune] {len(vsrc_all)} validation pairs from {len(args.val)} file(s).",
+              flush=True)
+        eval_refs = vtgt_all
+        eval_ds = Dataset.from_dict({"src": vsrc_all, "tgt": vtgt_all})
+        eval_ds = eval_ds.map(preprocess, batched=True, remove_columns=eval_ds.column_names,
+                              desc="tokenizing-val")
+
     # Padding is delegated to the stock collator (model=None so it does NOT try,
     # and fail, to build decoder_input_ids itself); IT2DataCollator then attaches
     # decoder_input_ids every batch. This is the core fix.
@@ -582,6 +604,19 @@ def cmd_finetune(args):
         print(f"[finetune] resuming from {resume}", flush=True)
     elif args.resume == "auto":
         print("[finetune] no compatible checkpoint found -- starting from scratch.", flush=True)
+
+    do_eval = eval_ds is not None
+    eval_bs = args.eval_batch_size or args.batch_size
+
+    # save_steps must be a multiple of eval_steps when load_best_model_at_end=True
+    # (transformers requirement). Round save_steps up to the nearest multiple
+    # of eval_steps rather than silently erroring.
+    save_steps = args.save_steps
+    eval_steps = args.eval_steps
+    if do_eval and save_steps % eval_steps != 0:
+        save_steps = ((save_steps // eval_steps) + 1) * eval_steps
+        print(f"[finetune] --val given: rounding save_steps {args.save_steps} -> "
+              f"{save_steps} (must be a multiple of --eval-steps={eval_steps}).", flush=True)
 
     targs = Seq2SeqTrainingArguments(
         output_dir=str(out),
@@ -601,10 +636,19 @@ def cmd_finetune(args):
         label_smoothing_factor=0.1,
         logging_steps=50,
         save_strategy="steps",
-        save_steps=args.save_steps,
+        save_steps=save_steps,
         save_total_limit=3,
         report_to=[],
         save_safetensors=True,
+        # ---- validation/dev-set evaluation (no-op unless --val is given) ----
+        eval_strategy="steps" if do_eval else "no",
+        eval_steps=eval_steps if do_eval else None,
+        per_device_eval_batch_size=eval_bs,
+        predict_with_generate=do_eval and args.compute_bleu,
+        generation_max_length=args.max_len if (do_eval and args.compute_bleu) else None,
+        load_best_model_at_end=do_eval,
+        metric_for_best_model=("bleu" if (do_eval and args.compute_bleu) else "loss"),
+        greater_is_better=(do_eval and args.compute_bleu),  # higher BLEU is better; lower loss is better
     )
 
     class StopOnSignal(TrainerCallback):
@@ -614,8 +658,48 @@ def cmd_finetune(args):
                 control.should_training_stop = True
             return control
 
+    # ---- optional BLEU/chrF++ during eval (only if --val + --compute-bleu) --
+    compute_metrics_fn = None
+    if do_eval and args.compute_bleu:
+        ip_infer = get_processor(inference=True)
+
+        def compute_metrics_fn(eval_preds):
+            preds, labels = eval_preds
+            if isinstance(preds, tuple):
+                preds = preds[0]
+
+            def _to_ids(seq):
+                # works for python lists or numpy/torch arrays; -100 -> pad_id
+                return [[pad_id if t == -100 else int(t) for t in row] for row in seq]
+
+            dec_preds = tok.batch_decode(_to_ids(preds), skip_special_tokens=True,
+                                         clean_up_tokenization_spaces=True)
+            dec_labels = tok.batch_decode(_to_ids(labels), skip_special_tokens=True,
+                                          clean_up_tokenization_spaces=True)
+            dec_preds = ip_infer.postprocess_batch(dec_preds, lang=tgt_tag)
+            dec_labels = ip_infer.postprocess_batch(dec_labels, lang=tgt_tag)
+
+            res = score_indic(dec_preds, dec_labels, tgt_tag)
+            # IndicEvaluator's return shape may vary slightly across versions;
+            # pull out bleu / chrF++ scores defensively.
+            def _get(d, *keys):
+                for k in keys:
+                    if isinstance(d, dict) and k in d:
+                        v = d[k]
+                        if isinstance(v, dict) and "score" in v:
+                            return v["score"]
+                        return v
+                return 0.0
+
+            return {
+                "bleu": _get(res, "bleu", "BLEU"),
+                "chrf++": _get(res, "chrF++", "chrf++", "CHRF++"),
+            }
+
     trainer = Seq2SeqTrainer(model=model, args=targs, train_dataset=ds,
-                             data_collator=collator, callbacks=[StopOnSignal()])
+                             eval_dataset=eval_ds,
+                             data_collator=collator, callbacks=[StopOnSignal()],
+                             compute_metrics=compute_metrics_fn)
     try:
         trainer.train(resume_from_checkpoint=resume)
     except RuntimeError as exc:
@@ -775,7 +859,7 @@ def build_parser():
     f.add_argument("--epochs", type=float, default=5)
     f.add_argument("--lr", type=float, default=5e-5)   # 2e-4 causes collapse; 5e-5 is the only proven-stable value
     f.add_argument("--grad-accum", type=int, default=4)
-    f.add_argument("--lora-r", type=int, default=16)
+    f.add_argument("--lora-r", type=int, default=64)   # r=64: matches saved adapter; use r=16 only when starting fresh
     f.add_argument("--lora-alpha", type=int, default=32)  # alpha >= r; scaling = alpha/r = 2.0
     f.add_argument("--dora", action="store_true")
     f.add_argument("--rslora", action="store_true")
@@ -787,6 +871,23 @@ def build_parser():
                         "(the saved config wins; default: error out)")
     f.add_argument("--save-steps", type=int, default=300)
     f.add_argument("--resume", default="auto")
+
+    # ---- validation / dev-set evaluation (all optional; off by default,
+    # so existing commands without --val behave EXACTLY as before) --------
+    f.add_argument("--val", nargs="+", default=None,
+                   help="validation/dev file(s), same format as --train. "
+                        "If omitted, no evaluation is run during training.")
+    f.add_argument("--val-src-col", default=None,
+                   help="column name for source in --val files (default: same as --src-col)")
+    f.add_argument("--val-tgt-col", default=None,
+                   help="column name for target in --val files (default: same as --tgt-col)")
+    f.add_argument("--eval-steps", type=int, default=300,
+                   help="run evaluation every N steps (only used if --val is given)")
+    f.add_argument("--eval-batch-size", type=int, default=None,
+                   help="per-device eval batch size (default: same as --batch-size)")
+    f.add_argument("--compute-bleu", action="store_true",
+                   help="also compute BLEU/chrF++ (via IndicEvaluator) during eval. "
+                        "Slower (uses generation each eval step); requires --val.")
 
     k = sub.add_parser("package")
     k.add_argument("--outputs-dir", default="outputs")
