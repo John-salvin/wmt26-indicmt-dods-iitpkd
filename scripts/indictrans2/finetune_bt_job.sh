@@ -11,7 +11,7 @@
 #SBATCH --requeue
 
 # Usage:
-#   sbatch --job-name=ft_mni scripts/finetune_bt_job.sh \
+#   sbatch --job-name=ft_mni scripts/indictrans2/finetune_bt_job.sh \
 #          en mni 5e-5 5 \
 #          ckpts/it2_en-mni/final \       <- best existing adapter for this direction
 #          ckpts/it2_en-mni_bt_ft
@@ -33,7 +33,7 @@ BASE_MODEL=/scratch/$USER/wmt26/hf_cache/hub/models--ai4bharat--indictrans2-en-i
 echo "[ft] START $(date)  ${SRC}→${TGT}  lr=${LR}  epochs=${EPOCHS}"
 echo "[ft] init_adapter=${INIT_ADAPTER}  out=ckpts/${OUT_NAME}"
 
-python src/run_indictrans2_v2.py finetune \
+python src/run_indictrans2.py finetune \
     --base "$BASE_MODEL" \
     --train  "data/train_ready/off_${SRC}-${TGT}.tsv" \
     --train  "data/train_ready/bt_${SRC}-${TGT}_tagged.tsv" \

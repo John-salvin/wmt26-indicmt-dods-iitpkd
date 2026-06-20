@@ -1,0 +1,30 @@
+# Stage 2: warm-start from Stage 1, train on official + self-generated back-translation
+base_model_en_indic: ai4bharat/indictrans2-en-indic-1B
+base_model_indic_en: ai4bharat/indictrans2-indic-en-1B
+init_adapter: <stage1_adapter>  # e.g. ckpts/it2_en-mni/final ; --allow-init-adapter-dora-mismatch
+                                # only if the saved adapter_config.json legitimately differs
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  dora: false
+  rslora: false
+  target_modules: [q_proj, k_proj, v_proj, out_proj,
+                    encoder_attn.q_proj, encoder_attn.k_proj,
+                    encoder_attn.v_proj, encoder_attn.out_proj,
+                    fc1, fc2]
+  bias: none
+training:
+  precision: bf16
+  gradient_checkpointing: true
+  batch_size: 16
+  grad_accum: 4
+  max_length: 256
+  optimizer: adamw
+  learning_rate: 5.0e-5
+  lr_scheduler: cosine
+  warmup_ratio: 0.06
+  label_smoothing: 0.1
+  epochs: 3
+  beam_size: 5
+labse_filter: 0.75   # drop BT pairs below this LaBSE cosine similarity
