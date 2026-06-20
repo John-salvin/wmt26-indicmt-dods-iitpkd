@@ -41,12 +41,56 @@ wmt26-indicmt-dods-iitpkd/
 │   ├── SUBMISSIONS.md            # per-file adapter, data, pair counts, BLEU
 │   └── DATA_SOURCES.md           # official + external corpora used
 ├── results/
-│   └── nllb/                     # sacreBLEU evaluation outputs (text only)
+│   └── nllb/
+│       ├── eval_*.txt            # sacreBLEU outputs — WMT 2025 proxy eval only
+│       └── submit/               # WMT 2026 test-set outputs (committed)
+│           ├── DoDS-IITPKD_primary_en_to_kha.txt
+│           ├── DoDS-IITPKD_contrastive_en_to_kha.txt
+│           ├── DoDS-IITPKD_primary_en_to_lus.txt
+│           ├── DoDS-IITPKD_contrastive_en_to_lus.txt
+│           ├── DoDS-IITPKD_primary_en_to_trp.txt
+│           ├── DoDS-IITPKD_contrastive_en_to_trp.txt
+│           ├── DoDS-IITPKD_primary_kha_to_en.txt
+│           ├── DoDS-IITPKD_contrastive_kha_to_en.txt
+│           ├── DoDS-IITPKD_primary_lus_to_en.txt
+│           ├── DoDS-IITPKD_contrastive_lus_to_en.txt
+│           ├── DoDS-IITPKD_primary_trp_to_en.txt
+│           └── DoDS-IITPKD_contrastive_trp_to_en.txt
 └── tests/
     └── test_data_loader.py
 ```
 
-**Not committed (generated at runtime):** `ckpts/`, `data/`, `logs/`, `outputs/submit/`, `*.safetensors`
+**Not committed (generated at runtime):** `ckpts/`, `data/`, `logs/`, `*.safetensors`
+
+---
+
+## Data
+
+### Training data (publicly available)
+
+The WMT 2026 official parallel training files are released by the shared task organizers.
+Obtain them from the official task page and place them under `data/`:
+
+```
+data/
+├── en-kha.train.csv     # English–Khasi
+├── en-lus.train.csv     # English–Mizo
+└── en-trp.train.csv     # English–Kokborok (2,269 pairs)
+```
+
+### Test sets (participant-only)
+
+The WMT 2026 test inputs and the WMT 2025 gold-standard references are distributed
+exclusively to registered participants and cannot be shared here. To run final inference
+or reproduce the `eval_*.txt` scores you must obtain these files from the task organizers.
+
+### Backtranslation monolingual files
+
+The files `data/bt/mono_{en,kha,lus}.txt` are **not external data** — they are extracted
+from the official training CSVs (same-domain sentences, no material from outside the
+allowed sources). They are not committed to this repository. To regenerate them, run
+`scripts/nllb/02_backtranslate_all.sh` after placing the training CSVs under `data/`.
+See [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) for details.
 
 ---
 
@@ -55,14 +99,16 @@ wmt26-indicmt-dods-iitpkd/
 Full details: [`docs/REPRODUCE_NLLB.md`](docs/REPRODUCE_NLLB.md)
 
 ```bash
-# Install dependencies
+# 1. Install dependencies
 pip install -r requirements.txt
 
-# Place WMT 2026 official data under data/ and monolingual BT data under data/bt/
-# Edit VENV and HF_HOME in scripts/run.sbatch (two lines at the top, once only)
+# 2. Place WMT 2026 official training CSVs under data/
+#    (test sets are participant-only — obtain from task organizers)
+
+# 3. Edit VENV and HF_HOME in scripts/run.sbatch (two lines at the top, once only)
 
 bash scripts/nllb/01_finetune_all_baselines.sh      # Stage 1: official-only adapters
-bash scripts/nllb/02_backtranslate_all.sh            # Stage 2 prep: BT TSVs
+bash scripts/nllb/02_backtranslate_all.sh            # Stage 2 prep: BT from train CSVs
 bash scripts/nllb/03_finetune_all_bt.sh              # Stage 2: BT-augmented (primaries)
 bash scripts/nllb/04_finetune_contrastive.sh         # Stage 3: contrastive (external data)
 bash scripts/nllb/05_translate_final_primary.sh      # Final inference: 6 primary outputs
@@ -70,7 +116,7 @@ bash scripts/nllb/06_translate_final_contrastive.sh  # Final inference: 6 contra
 bash scripts/nllb/07_fix_garble_postprocess.sh       # Post-hoc degenerate-line repair
 ```
 
-Outputs land in `outputs/submit/DoDS-IITPKD_{primary,contrastive}_{src}_to_{tgt}.txt`.
+The committed WMT 2026 test-set outputs are in `results/nllb/submit/`.
 
 ---
 
@@ -97,8 +143,8 @@ target language from training data.
 
 > **Note on BLEU scores:** All BLEU/chrF figures below were computed against the
 > **WMT 2025 gold-standard test set** (last year's released references), used as a
-> development proxy. WMT 2026 test references are not yet public. All files under
-> `results/nllb/` and every mention of "eval" or "dev BLEU" in this repository refer
+> development proxy. WMT 2026 test references are not yet public. All `eval_*.txt` files
+> in `results/nllb/` and every mention of "eval" or "dev BLEU" in this repository refer
 > to this **WMT 2025 proxy evaluation**, not the WMT 2026 test set.
 
 | Direction | Best adapter | Dev BLEU (WMT 2025 proxy) | System |
