@@ -37,19 +37,32 @@ wmt26-indicmt-dods-iitpkd/
 │       └── preprocess_mt_output.py   # MT output cleanup for scoring
 └── results/
     └── indictrans2/
-        └── submit/                   # WMT 2026 test-set outputs (committed)
-            ├── DoDS-IITPKD_primary_en_to_as.txt
-            ├── DoDS-IITPKD_primary_as_to_en.txt
-            ├── DoDS-IITPKD_primary_en_to_mni.txt
-            ├── DoDS-IITPKD_primary_mni_to_en.txt
-            ├── DoDS-IITPKD_primary_en_to_bodo.txt
-            ├── DoDS-IITPKD_primary_bodo_to_en.txt
-            ├── DoDS-IITPKD_contrastive_en_to_as.txt
-            ├── DoDS-IITPKD_contrastive_en_to_mni.txt
-            ├── DoDS-IITPKD_contrastive_en_to_bodo.txt
-            ├── DoDS-IITPKD_constrained_as_to_en.txt
-            ├── DoDS-IITPKD_constrained_mni_to_en.txt
-            └── DoDS-IITPKD_constrained_bodo_to_en.txt
+        ├── WMT26 Test Set Outputs/    # WMT 2026 test-set outputs (committed)
+        │   ├── DoDS-IITPKD_primary_en_to_as.txt
+        │   ├── DoDS-IITPKD_primary_as_to_en.txt
+        │   ├── DoDS-IITPKD_primary_en_to_mni.txt
+        │   ├── DoDS-IITPKD_primary_mni_to_en.txt
+        │   ├── DoDS-IITPKD_primary_en_to_bodo.txt
+        │   ├── DoDS-IITPKD_primary_bodo_to_en.txt
+        │   ├── DoDS-IITPKD_contrastive_en_to_as.txt
+        │   ├── DoDS-IITPKD_contrastive_en_to_mni.txt
+        │   ├── DoDS-IITPKD_contrastive_en_to_bodo.txt
+        │   ├── DoDS-IITPKD_constrained_as_to_en.txt
+        │   ├── DoDS-IITPKD_constrained_mni_to_en.txt
+        │   └── DoDS-IITPKD_constrained_bodo_to_en.txt
+        └── WMT25 Gold Test Set Outputs/  # dev-proxy eval outputs against WMT 2025 gold (committed)
+            ├── eval_en-as.txt
+            ├── eval_en-as_parallel.txt
+            ├── eval_en-mni.txt
+            ├── eval_en-mni_mono.txt
+            ├── eval_en-bodo.txt
+            ├── eval_en-bodo_mono.txt
+            ├── eval_as-en_bt.txt
+            ├── eval_as-en_contrained.txt
+            ├── eval_mni-en_bt.txt
+            ├── eval_mni-en_constrained.txt
+            ├── eval_bodo-en_bt.txt
+            └── eval_bodo-en_constrained.txt
 ```
 
 **Not committed (generated at runtime):** `ckpts/`, `data/`, `logs/`, `*.safetensors`
@@ -136,7 +149,7 @@ python src/run_indictrans2.py translate \
 python src/run_indictrans2.py package --outputs-dir outputs --team DoDS-IITPKD
 ```
 
-The committed WMT 2026 test-set outputs are in `results/indictrans2/submit/`.
+The committed WMT 2026 test-set outputs are in `results/indictrans2/WMT26 Test Set Outputs/`.
 
 GPU jobs on the cluster go through `scripts/run.sbatch`,
 `scripts/indictrans2/finetune_bt_job.sh` (fine-tune / BT-stage fine-tune, with
@@ -173,8 +186,8 @@ the latest LoRA-rank-compatible checkpoint.
 
 ## IndicTrans2 Language Pairs
 
-12 submission files: see `results/indictrans2/submit/` for the committed WMT 2026 test-set
-outputs (primary / contrastive / constrained, per the labels in each filename).
+12 submission files: see `results/indictrans2/WMT26 Test Set Outputs/` for the committed
+WMT 2026 test-set outputs (primary / contrastive / constrained, per the labels in each filename).
 
 > Dev-proxy BLEU/chrF++ figures (WMT 2025 gold as a development set, via
 > `src/run_indictrans2.py translate --score`) are not yet committed to this repository for
