@@ -1,0 +1,35 @@
+# Stage 3: warm-start from Stage 2, add external public corpora (BPCC/PMINDIA/SMOL/...)
+base_model_en_indic: ai4bharat/indictrans2-en-indic-1B
+base_model_indic_en: ai4bharat/indictrans2-indic-en-1B
+init_adapter: <stage2_adapter>  # e.g. ckpts/it2_en-mni_bt/final
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  dora: false
+  rslora: false
+  target_modules: [q_proj, k_proj, v_proj, out_proj,
+                    encoder_attn.q_proj, encoder_attn.k_proj,
+                    encoder_attn.v_proj, encoder_attn.out_proj,
+                    fc1, fc2]
+  bias: none
+training:
+  precision: bf16
+  gradient_checkpointing: true
+  batch_size: 16
+  grad_accum: 4
+  max_length: 256
+  optimizer: adamw
+  learning_rate: 5.0e-5
+  lr_scheduler: cosine
+  warmup_ratio: 0.06
+  label_smoothing: 0.1
+  epochs: 3
+  beam_size: 5
+data_cap:
+  cap: 100000        # scripts/indictrans2/cap_training_data.py
+  bt_reserve: 25000
+rerank:
+  enabled: true
+  model: Unbabel/wmt22-cometkiwi-da
+  n_candidates: 10
