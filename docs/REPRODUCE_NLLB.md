@@ -1,8 +1,9 @@
 # Reproducing the NLLB Submissions
 
 > **Note on evaluation:** BLEU/chrF scores reported in `docs/SUBMISSIONS.md` and in
-> `results/nllb/eval_*.txt` were computed against the **WMT 2025 gold-standard test set**
-> as a development proxy. They are **not** WMT 2026 test set scores.
+> `results/nllb/WMT25 Gold Test Set Outputs/eval_*.txt` were computed against the
+> **WMT 2025 gold-standard test set** as a development proxy. They are **not** WMT 2026
+> test set scores.
 
 ## Prerequisites
 
@@ -48,7 +49,7 @@ bash scripts/nllb/06_translate_final_contrastive.sh
 bash scripts/nllb/07_fix_garble_postprocess.sh
 ```
 
-The committed WMT 2026 test-set outputs are in `results/nllb/submit/`.
+The committed WMT 2026 test-set outputs are in `results/nllb/WMT26 Test Set Outputs/`.
 
 ## Notes
 
@@ -57,5 +58,5 @@ The committed WMT 2026 test-set outputs are in `results/nllb/submit/`.
 - All training uses LoRA + DoRA + rsLoRA with rank 64, α=16, dropout 0.05, bf16,
   effective batch 32 (8 × grad-accum 4), AdamW with 3% warmup.
 - Beam size 4 for all decoding.
-- Dev BLEU/chrF outputs (sacreBLEU text, WMT 2025 proxy) are committed under `results/nllb/eval_*.txt`.
-- Final WMT 2026 test-set submission files are committed under `results/nllb/submit/`.
+- Dev BLEU/chrF outputs (sacreBLEU text, WMT 2025 proxy) are committed under `results/nllb/WMT25 Gold Test Set Outputs/eval_*.txt`.
+- Final WMT 2026 test-set submission files are committed under `results/nllb/WMT26 Test Set Outputs/`.
