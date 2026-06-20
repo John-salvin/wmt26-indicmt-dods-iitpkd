@@ -42,8 +42,17 @@ wmt26-indicmt-dods-iitpkd/
 │   └── DATA_SOURCES.md           # official + external corpora used
 ├── results/
 │   └── nllb/
-│       ├── eval_*.txt            # sacreBLEU outputs — WMT 2025 proxy eval only
-│       └── submit/               # WMT 2026 test-set outputs (committed)
+│       ├── WMT25 Gold Test Set Outputs/   # sacreBLEU outputs — WMT 2025 proxy eval only
+│       │   ├── eval_en-kha_bt.txt
+│       │   ├── eval_en-kha_ext.txt
+│       │   ├── eval_en-lus_bt.txt
+│       │   ├── eval_en-trp.txt
+│       │   ├── eval_kha-en_bt.txt
+│       │   ├── eval_kha-en_ext2.txt
+│       │   ├── eval_lus-en_bt.txt
+│       │   ├── eval_lus-en_ext.txt
+│       │   └── eval_trp-en.txt
+│       └── WMT26 Test Set Outputs/        # WMT 2026 test-set outputs (committed)
 │           ├── DoDS-IITPKD_primary_en_to_kha.txt
 │           ├── DoDS-IITPKD_contrastive_en_to_kha.txt
 │           ├── DoDS-IITPKD_primary_en_to_lus.txt
@@ -116,7 +125,7 @@ bash scripts/nllb/06_translate_final_contrastive.sh  # Final inference: 6 contra
 bash scripts/nllb/07_fix_garble_postprocess.sh       # Post-hoc degenerate-line repair
 ```
 
-The committed WMT 2026 test-set outputs are in `results/nllb/submit/`.
+The committed WMT 2026 test-set outputs are in `results/nllb/WMT26 Test Set Outputs/`.
 
 ---
 
@@ -144,8 +153,8 @@ target language from training data.
 > **Note on BLEU scores:** All BLEU/chrF figures below were computed against the
 > **WMT 2025 gold-standard test set** (last year's released references), used as a
 > development proxy. WMT 2026 test references are not yet public. All `eval_*.txt` files
-> in `results/nllb/` and every mention of "eval" or "dev BLEU" in this repository refer
-> to this **WMT 2025 proxy evaluation**, not the WMT 2026 test set.
+> in `results/nllb/WMT25 Gold Test Set Outputs/` and every mention of "eval" or "dev BLEU"
+> in this repository refer to this **WMT 2025 proxy evaluation**, not the WMT 2026 test set.
 
 | Direction | Best adapter | Dev BLEU (WMT 2025 proxy) | System |
 |---|---|---|---|
