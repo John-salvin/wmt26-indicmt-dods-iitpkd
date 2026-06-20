@@ -1,0 +1,31 @@
+# Stage 1: supervised fine-tune on official parallel data only
+# en->indic directions use base_model_en_indic; indic->en directions use base_model_indic_en
+base_model_en_indic: ai4bharat/indictrans2-en-indic-1B
+base_model_indic_en: ai4bharat/indictrans2-indic-en-1B
+lora:
+  r: 16
+  alpha: 32          # alpha >= r; scaling = alpha/r = 2.0
+  dropout: 0.05
+  dora: false
+  rslora: false
+  # attention + FFN projections only -- NOT lm_head / shared embeddings, which
+  # IndicTrans2 uses for 22-language tag routing. Corrupting those causes
+  # wrong-script / empty output in low-resource directions (en->as, en->mni).
+  target_modules: [q_proj, k_proj, v_proj, out_proj,
+                    encoder_attn.q_proj, encoder_attn.k_proj,
+                    encoder_attn.v_proj, encoder_attn.out_proj,
+                    fc1, fc2]
+  bias: none
+training:
+  precision: bf16
+  gradient_checkpointing: true
+  batch_size: 16
+  grad_accum: 4
+  max_length: 256
+  optimizer: adamw
+  learning_rate: 5.0e-5   # 2e-4 causes collapse; 5e-5 is the only proven-stable value
+  lr_scheduler: cosine
+  warmup_ratio: 0.06
+  label_smoothing: 0.1
+  epochs: 5
+  beam_size: 5
