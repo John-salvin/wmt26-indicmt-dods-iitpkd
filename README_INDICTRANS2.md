@@ -17,7 +17,8 @@ wmt26-indicmt-dods-iitpkd/
 ├── README_INDICTRANS2.md
 ├── requirements.txt                  # pinned versions (CUDA 12.1 / H100)
 ├── src/
-│   └── run_indictrans2.py            # PRIMARY pipeline: finetune / backtranslate / translate / score / package
+│   ├── run_indictrans2.py            # PRIMARY pipeline: finetune / backtranslate / translate / score / package
+│   └── extract_mono.py               # extract one column of a parallel CSV into monolingual .txt for backtranslate
 ├── scripts/
 │   ├── run.sbatch                    # SLURM wrapper (edit VENV + HF_HOME once); shared with the NLLB side
 │   ├── fix_garble.py                 # post-hoc repair of degenerate output lines; shared with the NLLB side
@@ -47,6 +48,12 @@ wmt26-indicmt-dods-iitpkd/
         │   ├── DoDS-IITPKD_contrastive_en_to_as.txt
         │   ├── DoDS-IITPKD_contrastive_en_to_mni.txt
         │   ├── DoDS-IITPKD_contrastive_en_to_bodo.txt
+        │   ├── DoDS-IITPKD_contrastive2_en_to_as.txt
+        │   ├── DoDS-IITPKD_contrastive2_en_to_mni.txt
+        │   ├── DoDS-IITPKD_contrastive2_en_to_bodo.txt
+        │   ├── DoDS-IITPKD_contrastive2_as_to_en.txt
+        │   ├── DoDS-IITPKD_contrastive2_mni_to_en.txt
+        │   ├── DoDS-IITPKD_contrastive2_bodo_to_en.txt
         │   ├── DoDS-IITPKD_constrained_as_to_en.txt
         │   ├── DoDS-IITPKD_constrained_mni_to_en.txt
         │   └── DoDS-IITPKD_constrained_bodo_to_en.txt

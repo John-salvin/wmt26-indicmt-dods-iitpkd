@@ -175,4 +175,5 @@
 
 All primary systems are constrained (official data + self-generated BT from allowed monolingual).  
 All contrastive systems use external data (IndicNECorp 1.0, SMOL/GATITOS, Tatoeba).  
-Submission `.txt` files are **not** committed — use `docs/REPRODUCE_NLLB.md` to regenerate them.
+Submission `.txt` files are committed under `results/nllb/WMT26 Test Set Outputs/`; use
+`docs/REPRODUCE_NLLB.md` to regenerate them.
