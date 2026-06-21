@@ -4,8 +4,12 @@ Submission code for the [WMT 2026 Low-Resource Indic Language Translation shared
 
 **Team:** DoDS-IITPKD (IIT Palakkad)
 
-This repository covers the **NLLB-200 side** of the submission (Khasi, Mizo, Kokborok).
-The IndicTrans2 side (Assamese, Manipuri, Bodo) is handled separately.
+This repository covers both sides of the submission:
+
+- **NLLB-200 side** (Khasi, Mizo, Kokborok) — documented in this file.
+- **IndicTrans2 side** (Assamese, Manipuri, Bodo) — documented separately in
+  [`README_INDICTRANS2.md`](README_INDICTRANS2.md), with reproduction steps in
+  [`docs/REPRODUCE_INDICTRANS2.md`](docs/REPRODUCE_INDICTRANS2.md).
 
 ---
 
@@ -126,6 +130,15 @@ bash scripts/nllb/07_fix_garble_postprocess.sh       # Post-hoc degenerate-line 
 ```
 
 The committed WMT 2026 test-set outputs are in `results/nllb/WMT26 Test Set Outputs/`.
+
+---
+
+## IndicTrans2 Reproduction Quickstart
+
+For the Assamese, Manipuri, and Bodo directions, see
+[`README_INDICTRANS2.md`](README_INDICTRANS2.md) and
+[`docs/REPRODUCE_INDICTRANS2.md`](docs/REPRODUCE_INDICTRANS2.md). The committed WMT 2026
+test-set outputs are in `results/indictrans2/WMT26 Test Set Outputs/`.
 
 ---
 
