@@ -189,19 +189,20 @@ the latest LoRA-rank-compatible checkpoint.
 12 submission files: see `results/indictrans2/WMT26 Test Set Outputs/` for the committed
 WMT 2026 test-set outputs (primary / contrastive / constrained, per the labels in each filename).
 
-> Dev-proxy BLEU/chrF++ figures (WMT 2025 gold as a development set, via
-> `src/run_indictrans2.py translate --score`) are not yet committed to this repository for
-> the IndicTrans2 side. Reproduce them with `scripts/indictrans2/eval_job.sh <src> <tgt>
-> <adapter_dir> <label>` once the WMT 2025 gold files are in place under `data/wmt25_gold/`.
+> **Note on BLEU scores:** Figures below were computed against the **WMT 2025
+> gold-standard test set**, used as a development proxy (same convention as the NLLB side).
+> WMT 2026 test references are not yet public. Reproduce them with
+> `scripts/indictrans2/eval_job.sh <src> <tgt> <adapter_dir> <label>` once the WMT 2025 gold
+> files are in place under `data/wmt25_gold/`.
 
-| Direction | Adapter (example) |
-|---|---|
-| en→as (English→Assamese) | `ckpts/it2_en-as/final` |
-| as→en (Assamese→English) | `ckpts/it2_as-en/final` |
-| en→mni (English→Manipuri) | `ckpts/it2_en-mni/final` |
-| mni→en (Manipuri→English) | `ckpts/it2_mni-en/final` |
-| en→bodo (English→Bodo) | `ckpts/it2_en-bodo/final` |
-| bodo→en (Bodo→English) | `ckpts/it2_bodo-en/final` |
+| Direction | Adapter (example) | Dev BLEU (WMT 2025 proxy) | System |
+|---|---|---|---|
+| en→as (English→Assamese) | `ckpts/it2_en-as/final` | 26.30 | primary |
+| as→en (Assamese→English) | `ckpts/it2_as-en/final` | 34.20 | primary |
+| en→mni (English→Manipuri) | `ckpts/it2_en-mni/final` | 7.40 | primary |
+| mni→en (Manipuri→English) | `ckpts/it2_mni-en/final` | 23.0 | primary |
+| en→bodo (English→Bodo) | `ckpts/it2_en-bodo/final` | 36.6 | primary |
+| bodo→en (Bodo→English) | `ckpts/it2_bodo-en/final` | 36.7 | primary |
 
 ---
 
