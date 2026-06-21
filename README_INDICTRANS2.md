@@ -198,11 +198,11 @@ WMT 2026 test-set outputs (primary / contrastive / constrained, per the labels i
 | Direction | Adapter (example) | Dev BLEU (WMT 2025 proxy) | System |
 |---|---|---|---|
 | en→as (English→Assamese) | `ckpts/it2_en-as/final` | 26.30 | primary |
-| as→en (Assamese→English) | `ckpts/it2_as-en/final` | 34.20 | primary |
+| as→en (Assamese→English) | `ckpts/it2_as-en_bt/final` | 34.20 | primary |
 | en→mni (English→Manipuri) | `ckpts/it2_en-mni/final` | 7.40 | primary |
-| mni→en (Manipuri→English) | `ckpts/it2_mni-en/final` | 23.0 | primary |
+| mni→en (Manipuri→English) | `ckpts/it2_mni-en_bt/final` | 23.0 | primary |
 | en→bodo (English→Bodo) | `ckpts/it2_en-bodo/final` | 36.6 | primary |
-| bodo→en (Bodo→English) | `ckpts/it2_bodo-en/final` | 36.7 | primary |
+| bodo→en (Bodo→English) | `ckpts/it2_bodo-en_bt/final` | 36.7 | primary |
 
 ---
 
