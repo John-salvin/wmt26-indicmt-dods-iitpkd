@@ -1,9 +1,9 @@
 # Reproducing the IndicTrans2 Submissions
 
-> **Note on evaluation:** Dev-proxy BLEU/chrF++ figures for the IndicTrans2 side (WMT 2025
-> gold as a development set) are not yet committed to this repository. Reproduce them with
-> `scripts/indictrans2/eval_job.sh <src> <tgt> <adapter_dir> <label>` once the WMT 2025 gold
-> files are in place under `data/wmt25_gold/`.
+> **Note on evaluation:** Dev-proxy BLEU figures for the IndicTrans2 side (WMT 2025
+> gold as a development set) are committed in [`README_INDICTRANS2.md`](../README_INDICTRANS2.md#indictrans2-language-pairs).
+> Reproduce them with `scripts/indictrans2/eval_job.sh <src> <tgt> <adapter_dir> <label>`
+> once the WMT 2025 gold files are in place under `data/wmt25_gold/`.
 
 ## Prerequisites
 
