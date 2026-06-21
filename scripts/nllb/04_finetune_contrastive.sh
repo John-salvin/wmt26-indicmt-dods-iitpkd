@@ -3,16 +3,16 @@
 set -e
 cd /scratch/$USER/wmt26  # adjust to your cluster path
 
-# Prerequisites: external corpora prepared as TSVs under Contrastive/data/train_ready/
+# Prerequisites: external corpora prepared as TSVs under data/train_ready/
 #   - off_kha-en.tsv, ext_kha-en.tsv, bt_kha-en.tsv (for kha->en_ext2)
 #   - off_lus-en.tsv, bt_lus-en_v2.tsv  (for lus->en_ext; bt_lus-en_v2 is BT from IndicNECorp mono_lus_150k.txt)
 # See docs/DATA_SOURCES.md for external corpus details (SMOL/GATITOS, Tatoeba, IndicNECorp 1.0).
 
 # kha->en CONTRASTIVE (BLEU 17.57)  — best for this direction
 sbatch run.sbatch src/run_nllb.py finetune \
-  --train Contrastive/data/train_ready/off_kha-en.tsv \
-  --train Contrastive/data/train_ready/ext_kha-en.tsv \
-  --train Contrastive/data/train_ready/bt_kha-en.tsv \
+  --train data/train_ready/off_kha-en.tsv \
+  --train data/train_ready/ext_kha-en.tsv \
+  --train data/train_ready/bt_kha-en.tsv \
   --src kha --tgt en --src-col 0 --tgt-col 1 \
   --out ckpts/nllb_kha-en_ext2 \
   --init-adapter ckpts/nllb_kha-en_bt/final \
@@ -21,8 +21,8 @@ sbatch run.sbatch src/run_nllb.py finetune \
 
 # lus->en CONTRASTIVE (BLEU 24.55)  — best for this direction
 sbatch run.sbatch src/run_nllb.py finetune \
-  --train Contrastive/data/train_ready/off_lus-en.tsv \
-  --train Contrastive/data/train_ready/bt_lus-en_v2.tsv \
+  --train data/train_ready/off_lus-en.tsv \
+  --train data/train_ready/bt_lus-en_v2.tsv \
   --src lus --tgt en --src-col 0 --tgt-col 1 \
   --out ckpts/nllb_lus-en_ext \
   --init-adapter ckpts/nllb_lus-en_bt/final \
@@ -31,9 +31,9 @@ sbatch run.sbatch src/run_nllb.py finetune \
 
 # en->kha CONTRASTIVE (BLEU 21.60)
 sbatch run.sbatch src/run_nllb.py finetune \
-  --train Contrastive/data/train_ready/off_en-kha.tsv \
-  --train Contrastive/data/train_ready/ext_en-kha.tsv \
-  --train Contrastive/data/train_ready/bt_en-kha.tsv \
+  --train data/train_ready/off_en-kha.tsv \
+  --train data/train_ready/ext_en-kha.tsv \
+  --train data/train_ready/bt_en-kha.tsv \
   --src en --tgt kha --src-col 0 --tgt-col 1 \
   --out ckpts/nllb_en-kha_ext \
   --init-adapter ckpts/nllb_en-kha_bt/final \

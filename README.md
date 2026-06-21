@@ -59,16 +59,22 @@ wmt26-indicmt-dods-iitpkd/
 │       └── WMT26 Test Set Outputs/        # WMT 2026 test-set outputs (committed)
 │           ├── DoDS-IITPKD_primary_en_to_kha.txt
 │           ├── DoDS-IITPKD_contrastive_en_to_kha.txt
+│           ├── DoDS-IITPKD_contrastive2_en_to_kha.txt
 │           ├── DoDS-IITPKD_primary_en_to_lus.txt
 │           ├── DoDS-IITPKD_contrastive_en_to_lus.txt
+│           ├── DoDS-IITPKD_contrastive2_en_to_lus.txt
 │           ├── DoDS-IITPKD_primary_en_to_trp.txt
 │           ├── DoDS-IITPKD_contrastive_en_to_trp.txt
+│           ├── DoDS-IITPKD_contrastive2_en_to_trp.txt
 │           ├── DoDS-IITPKD_primary_kha_to_en.txt
 │           ├── DoDS-IITPKD_contrastive_kha_to_en.txt
+│           ├── DoDS-IITPKD_contrastive2_kha_to_en.txt
 │           ├── DoDS-IITPKD_primary_lus_to_en.txt
 │           ├── DoDS-IITPKD_contrastive_lus_to_en.txt
+│           ├── DoDS-IITPKD_contrastive2_lus_to_en.txt
 │           ├── DoDS-IITPKD_primary_trp_to_en.txt
-│           └── DoDS-IITPKD_contrastive_trp_to_en.txt
+│           ├── DoDS-IITPKD_contrastive_trp_to_en.txt
+│           └── DoDS-IITPKD_contrastive2_trp_to_en.txt
 └── tests/
     └── test_data_loader.py
 ```
