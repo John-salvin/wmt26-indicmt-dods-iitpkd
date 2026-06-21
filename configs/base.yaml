@@ -1,5 +1,5 @@
 # Shared defaults — individual experiment configs inherit and override.
-# Used by src/train/train_dora.py.
+# Used by src/run_nllb.py.
 
 base_model: facebook/nllb-200-3.3B
 

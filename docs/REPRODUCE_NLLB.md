@@ -21,6 +21,9 @@
   automatically** by `scripts/nllb/02_backtranslate_all.sh` from the training CSVs —
   these are not external data and are not committed to this repository.
 - For contrastive runs: external corpora (see `docs/DATA_SOURCES.md`)
+- `scripts/nllb/*.sh` invoke `sbatch run.sbatch ...` from `/scratch/$USER/wmt26` (the
+  cluster working directory), so copy or symlink `scripts/run.sbatch` there first:
+  `cp scripts/run.sbatch /scratch/$USER/wmt26/run.sbatch`
 
 ## Pipeline (run in order)
 
