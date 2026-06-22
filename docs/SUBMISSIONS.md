@@ -4,12 +4,18 @@
 **LoRA config (all runs):** rank 64, α=16, DoRA + rsLoRA, dropout 0.05, bf16, effective batch 32  
 **Inference:** beam search, beam size 4  
 
-12 submission files total: 6 primary + 6 contrastive, covering 3 language pairs × 2 directions.  
+18 submission files total: 6 primary + 6 contrastive + 6 contrastive2, covering 3 language
+pairs × 2 directions.  
 ★ = best system for that direction (by dev BLEU).
 
 > **Note on BLEU scores:** All Dev BLEU figures in this document were computed against the
 > **WMT 2025 gold-standard test set** used as a development proxy. WMT 2026 test references
 > are not yet public. These scores are **not** from the WMT 2026 test set.
+
+> **Note on contrastive2:** The 12 entries below (primary + contrastive) are the original
+> two-tier submission; `DoDS-IITPKD_contrastive2_*` files were added later as an optional
+> third variant per direction and are committed under `results/nllb/WMT26 Test Set Outputs/`,
+> but their dev-BLEU breakdown was not captured in this table.
 
 ---
 
