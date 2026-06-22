@@ -51,8 +51,8 @@ extra-data run is where the ceiling lives. Drop contrastive quietly if time runs
 out; never drop a primary.
   primary       official WMT26 data (+ back-translation from official mono).
                 Reliable, near-constrained.  -> DoDS-IITPKD_primary_<dir>.txt
-  contrastive1  primary + external public corpora (BPCC/PMINDIA/SMOL/...) +
-                both-base CometKiwi ensemble. -> DoDS-IITPKD_contrastive1_<dir>.txt
+  contrastive   primary + external public corpora (BPCC/PMINDIA/SMOL/...) +
+                both-base CometKiwi ensemble. -> DoDS-IITPKD_contrastive_<dir>.txt
   contrastive2  optional second variant.      -> DoDS-IITPKD_contrastive2_<dir>.txt
 Back-translation AND pretrained models are explicitly allowed in the primary
 (the rules permit "additional monolingual resources, pretrained, etc."). Nothing
@@ -425,7 +425,7 @@ def cmd_package(args):
             print(f"  ok  primary {p}")
         else:
             missing.append(prim.name)
-        for c in ("contrastive1", "contrastive2"):
+        for c in ("contrastive", "contrastive2"):
             cf = outdir / f"{team}_{c}_{p}.txt"
             if cf.exists():
                 (staging / cf.name).write_text(cf.read_text(encoding="utf-8"), encoding="utf-8")

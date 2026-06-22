@@ -193,8 +193,12 @@ the latest LoRA-rank-compatible checkpoint.
 
 ## IndicTrans2 Language Pairs
 
-12 submission files: see `results/indictrans2/WMT26 Test Set Outputs/` for the committed
-WMT 2026 test-set outputs (primary / contrastive / constrained, per the labels in each filename).
+18 submission files: see `results/indictrans2/WMT26 Test Set Outputs/` for the committed
+WMT 2026 test-set outputs (primary / contrastive / contrastive2 / constrained, per the labels
+in each filename). `primary` and `contrastive2` cover all 6 directions; `contrastive` is
+en→X only (3 files) and `constrained` is X→en only (3 files). The table below shows the
+primary system per direction only — contrastive/contrastive2/constrained dev-BLEU figures
+are not captured here.
 
 > **Note on BLEU scores:** Figures below were computed against the **WMT 2025
 > gold-standard test set**, used as a development proxy (same convention as the NLLB side).
